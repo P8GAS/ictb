@@ -15,21 +15,25 @@ pub struct Shoot {
 }
 
 impl Shoot {
-    pub fn new(sh: f32, hp: f32, bd: f32, bh: f32) -> Shoot {
-        Shoot { 
+    pub fn new(sh: f32, hp: f32, bd: f32, bh: f32) -> Result<Shoot, &'static str> {
+        if sh <= 1.0 || sh > hp || bh <= 0.0 { 
+            return Err("Invalid parameters: start_height must be > 1.0 and <= highest_point, basket_height must be > 0.0"); 
+        }
+        
+        Ok(Shoot { 
             start_height: sh,
             highest_point: hp,
             basket_distance: bd,
             basket_height: bh 
-        }
+        })
     }
 
     pub fn get_rising_time(&self) -> f32 {
-        f32::sqrt((2.0 * (self.highest_point() - self.start_height())) / G)
+        ((2.0 * (self.highest_point() - self.start_height())) / G).sqrt()
     }
 
     pub fn get_falling_time(&self) -> f32 {
-        f32::sqrt((2.0 * (self.highest_point() - self.basket_height())) / G)
+        ((2.0 * (self.highest_point() - self.basket_height())) / G).sqrt()
     }
 
     pub fn get_vx(&self) -> f32 {
